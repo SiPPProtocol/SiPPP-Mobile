@@ -4,11 +4,11 @@
     "slug": "SiPPP-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "@assets/images/favicon-64x64.png",
+    "icon": "./assets/images/favicon-64x64.png",
     "scheme": "sipppmobile",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "@assets/images/sippp-logo-transparent.png",
+      "image": "./assets/images/sippp-logo-transparent.png",
       "resizeMode": "contain",
       "backgroundColor": "#cdabf8"
     },
@@ -22,7 +22,7 @@
     "android": {
       "package": "box.sippp.app",
       "adaptiveIcon": {
-        "foregroundImage": "@assets/images/favicon-64x64.png",
+        "foregroundImage": "./assets/images/favicon-64x64.png",
         "backgroundColor": "#cdabf8"
       },
       "permissions": [
@@ -33,7 +33,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "@assets/images/favicon-64x64.png"
+      "favicon": "./assets/images/favicon-64x64.png"
     },
     "plugins": [
       "expo-router",
