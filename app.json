@@ -4,33 +4,57 @@
     "slug": "SiPPP-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "@assets/images/favicon-64x64.png",
+    "scheme": "sipppmobile",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "@assets/images/sippp-logo-transparent.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#cdabf8"
     },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "box.sippp.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to take photos"
+      }
     },
     "android": {
+      "package": "box.sippp.app",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "@assets/images/favicon-64x64.png",
+        "backgroundColor": "#cdabf8"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "@assets/images/favicon-64x64.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-camera",{
+          "cameraPermission": "Give $(PRODUCT_NAME) a chance, we prove it happened!!"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "privyAppId": "clx6q1bqj0crjlcx5i15umm5k",
+      "email": "sean@pharo.tech",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "5ad7742b-131c-4b37-8fd3-f3d72419c498"
+      }
     }
   }
 }
