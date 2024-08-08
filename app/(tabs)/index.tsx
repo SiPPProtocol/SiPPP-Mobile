@@ -5,23 +5,134 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-import { usePrivy } from '@privy-io/expo';
-import LoginScreen from './login';
+import {useLoginWithEmail, usePrivy} from "@privy-io/expo";
+// import LoginScreen from './login';
 import "react-native-get-random-values";
 import "fast-text-encoding";
 import "@ethersproject/shims";
 import "@shim";
 
+import Constants from "expo-constants";
+import React, {useLayoutEffect, useTransition, useEffect, useState} from "react";
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  // Image,
+  Alert,
+} from "react-native";
+import { router, useNavigation } from "expo-router";
+import Header from "@components/Header";
+import {logoStyle, loginStyles} from "@styles";
+
+
 export default function HomeScreen() {
   const usePrivyHook = usePrivy();
+  const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || "");
+  const [code, setCode] = useState("");
+  const [codeSent, setCodeSent] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const navigation = useNavigation();
+  const {sendCode, loginWithCode, status} = useLoginWithEmail({
+    onLoginSuccess(user, isNewUser) {
+      console.log("onLoginSuccess :: ", user, isNewUser);
+      setLoggedIn(true);
+    },
+    onSendCodeSuccess(args) {
+      console.log("onSendCodeSuccess :: ", args);
+      setCodeSent(true);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleSendCode = async () => {
+    try {
+      const code = await sendCode({email});
+      // setCodeSent(true);
+      console.log("sendCode :: code :: ", code);
+    } catch (error) {
+      console.error("Error during login:", error);
+      Alert.alert(
+        "Login Error",
+        "Failed to login. Please check your credentials and try again."
+      );
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      const blah = await loginWithCode({ code });
+      console.log("login :: blah :: ", blah);
+      // navigation.navigate("explore");
+      // return <></>;
+    } catch (error) {
+      console.error("Error during login:", error);
+      Alert.alert(
+        "Login Error",
+        "Failed to login. Please check your credentials and try again."
+      );
+    }
+  };
 
   return (
     <>
       {usePrivyHook.isReady && !usePrivyHook.user?.linked_accounts[1] ? (
-        <LoginScreen />          
-      ) : usePrivyHook.isReady &&
-        usePrivyHook.user?.linked_accounts[1]?.type === "wallet" &&
-        usePrivyHook.user?.linked_accounts[1] ? (
+        <View style={loginStyles.container}>
+        <Image
+          source={require("@assets/images/sippp-logo-transparent.png")}
+          style={logoStyle}
+          resizeMode="contain"
+        />
+        <TextInput
+          value={email}
+          onChangeText={setEmail}
+          placeholder="sippp@really.happened"
+          style={loginStyles.input}
+          inputMode="email"
+        />
+        <View style={loginStyles.buttonContainer}>
+          <TouchableOpacity
+            onPress={handleSendCode}
+            style={loginStyles.button}
+          >
+            <Text style={loginStyles.buttonText}>Send Code</Text>
+          </TouchableOpacity>
+        </View>
+        <TextInput
+          value={code}
+          onChangeText={setCode}
+          placeholder="Code"
+          style={loginStyles.input}
+          inputMode="numeric"
+        />
+        <View style={loginStyles.buttonContainer}>
+          {codeSent ? (
+            <TouchableOpacity
+              onPress={handleLogin}
+              style={loginStyles.button}
+            >
+              <Text style={loginStyles.buttonText}>Login</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              disabled={true}
+              onPress={handleLogin}
+              style={loginStyles.buttonDisabled}
+            >
+              <Text style={loginStyles.buttonText}>Email First</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <Text style={{color: "rgba(0,0,0,0.4)", marginVertical: 10}}>
+          (OTP state:{" "}
+          <Text style={{color: "blue"}}>{status}</Text>) 
+        </Text>
+        </View>
+      ) : loggedIn ? (
           <ThemedView style={styles.titleContainer}>
             <ThemedText type="title">USER USER BLAH BLAH!</ThemedText>
             <HelloWave />
@@ -36,6 +147,10 @@ export default function HomeScreen() {
     // <LoginScreen />
   );
 }
+
+// usePrivyHook.isReady &&
+//         usePrivyHook.user?.linked_accounts[1]?.type === "wallet" &&
+//         usePrivyHook.user?.linked_accounts[1]
 
 const styles = StyleSheet.create({
   titleContainer: {

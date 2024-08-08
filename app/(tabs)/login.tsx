@@ -22,10 +22,10 @@ const LoginScreen = () => {
   const [isPending, startTransition] = useTransition();
   const navigation = useNavigation();
   const {sendCode, loginWithCode, status} = useLoginWithEmail({
-  //   onLoginSuccess(user, isNewUser) {
-  //     console.log("onLoginSuccess :: ", user, isNewUser);
-  //     setLoggedIn(true);
-  //   },
+    onLoginSuccess(user, isNewUser) {
+      console.log("onLoginSuccess :: ", user, isNewUser);
+      setLoggedIn(true);
+    },
     onSendCodeSuccess(args) {
       console.log("onSendCodeSuccess :: ", args);
       setCodeSent(true);
