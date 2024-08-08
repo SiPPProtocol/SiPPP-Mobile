@@ -5,6 +5,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+import { usePrivy } from '@privy-io/expo';
 import LoginScreen from './login';
 import "react-native-get-random-values";
 import "fast-text-encoding";
@@ -12,8 +13,50 @@ import "@ethersproject/shims";
 import "@shim";
 
 export default function HomeScreen() {
+  const usePrivyHook = usePrivy();
+
   return (
-    <LoginScreen />
+    <>
+      {usePrivyHook.isReady && !usePrivyHook.user?.linked_accounts[1] ? (
+        <LoginScreen />          
+      ) : usePrivyHook.isReady &&
+        usePrivyHook.user?.linked_accounts[1]?.type === "wallet" &&
+        usePrivyHook.user?.linked_accounts[1] ? (
+          <ThemedView style={styles.titleContainer}>
+            <ThemedText type="title">USER USER BLAH BLAH!</ThemedText>
+            <HelloWave />
+          </ThemedView>
+        ) : (
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">FINALLY!</ThemedText>
+          <HelloWave />
+        </ThemedView>
+      )}
+    </>
+    // <LoginScreen />
+  );
+}
+
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  reactLogo: {
+    height: 178,
+    width: 290,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
+});
+
+    
     // <ParallaxScrollView
     //   headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
     //   headerImage={
@@ -54,24 +97,3 @@ export default function HomeScreen() {
     //     </ThemedText>
     //   </ThemedView>
     // </ParallaxScrollView>
-  );
-}
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
